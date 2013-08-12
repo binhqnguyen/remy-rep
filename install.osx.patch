@@ -1,0 +1,103 @@
+diff -aur ns-allinone-2.35.orig/install ns-allinone-2.35/install
+--- ns-allinone-2.35.orig/install	2012-09-07 14:36:21.000000000 -0700
++++ ns-allinone-2.35/install	2012-09-07 14:45:52.000000000 -0700
+@@ -200,6 +200,7 @@
+     echo "Darwin detected";
+     DYLD_LIBRARY_PATH=$CUR_PATH/tcl$TCLVER/unix:$CUR_PATH/tk$TKVER/unix:$DYLD_LIBRARY_PATH
+     export DYLD_LIBRARY_PATH
++    export LDFLAGS="-framework CoreFoundation"
+     test_darwin=true
+ fi
+ 
+@@ -565,11 +566,6 @@
+ 
+ cd ./nam-$NAMVER
+ 
+-# XXX temporary OS X hack
+-if  [ "${test_darwin}" = "true" ]; then
+-ln -s /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation libcorefoundation.dylib
+-fi
+-
+ if  [ "${test_cygwin}" = "true" ]; then
+         ./configure --x-libraries=/usr/X11R6/lib --x-includes=/usr/X11R6/include --with-tclcl=$CUR_PATH/tclcl-$TCLCLVER  --with-tcl-ver=$TCLVER --with-tk-ver=$TKVER || die "Nam configuration failed! Exiting ...";
+ else
+diff -aur ns-allinone-2.35.orig/nam-1.15/Makefile.in ns-allinone-2.35/nam-1.15/Makefile.in
+--- ns-allinone-2.35.orig/nam-1.15/Makefile.in	2012-09-07 14:36:27.000000000 -0700
++++ ns-allinone-2.35/nam-1.15/Makefile.in	2012-09-07 14:45:22.000000000 -0700
+@@ -72,7 +72,7 @@
+ BLANK	= # make a blank space.  DO NOT add anything to this line
+ AR	= ar rc $(BLANK)
+ LINK	= $(CPP)
+-LDFLAGS	=
++LDFLAGS	= @LDFLAGS@
+ LDOUT	= -o $(BLANK)
+ PERL	= perl
+ RM	= rm -f
+diff -aur ns-allinone-2.35.orig/ns-2.35/indep-utils/webtrace-conv/dec/Makefile.in ns-allinone-2.35/ns-2.35/indep-utils/webtrace-conv/dec/Makefile.in
+--- ns-allinone-2.35.orig/ns-2.35/indep-utils/webtrace-conv/dec/Makefile.in	2012-09-07 14:36:41.000000000 -0700
++++ ns-allinone-2.35/ns-2.35/indep-utils/webtrace-conv/dec/Makefile.in	2012-09-07 14:40:36.000000000 -0700
+@@ -54,7 +54,7 @@
+ CC = @CXX@
+ INCLUDE = -I. @V_INCLUDES@
+ CFLAGS = @V_CCOPT@ -DCPP_NAMESPACE=@CPP_NAMESPACE@
+-LDFLAGS = @V_STATIC@
++LDFLAGS = @LDFLAGS@
+ LIBS = @V_LIB_TCL@ @V_LIB@ @LIBS@
+ INSTALL = @INSTALL@
+ 
+diff -aur ns-allinone-2.35.orig/ns-2.35/indep-utils/webtrace-conv/epa/Makefile.in ns-allinone-2.35/ns-2.35/indep-utils/webtrace-conv/epa/Makefile.in
+--- ns-allinone-2.35.orig/ns-2.35/indep-utils/webtrace-conv/epa/Makefile.in	2012-09-07 14:36:42.000000000 -0700
++++ ns-allinone-2.35/ns-2.35/indep-utils/webtrace-conv/epa/Makefile.in	2012-09-07 14:40:22.000000000 -0700
+@@ -51,7 +51,7 @@
+ 
+ INCLUDE = -I. @V_INCLUDES@
+ CFLAGS = @V_CCOPT@ -DCPP_NAMESPACE=@CPP_NAMESPACE@
+-LDFLAGS = @V_STATIC@
++LDFLAGS = @LDFLAGS@
+ LIBS = @V_LIB_TCL@ @V_LIB@ @LIBS@
+ INSTALL = @INSTALL@
+ 
+diff -aur ns-allinone-2.35.orig/ns-2.35/indep-utils/webtrace-conv/nlanr/Makefile.in ns-allinone-2.35/ns-2.35/indep-utils/webtrace-conv/nlanr/Makefile.in
+--- ns-allinone-2.35.orig/ns-2.35/indep-utils/webtrace-conv/nlanr/Makefile.in	2012-09-07 14:36:42.000000000 -0700
++++ ns-allinone-2.35/ns-2.35/indep-utils/webtrace-conv/nlanr/Makefile.in	2012-09-07 14:40:02.000000000 -0700
+@@ -51,7 +51,7 @@
+ CC = @CXX@
+ INCLUDE = -I. -I../../.. @V_INCLUDES@
+ CFLAGS = @V_CCOPT@ -DCPP_NAMESPACE=@CPP_NAMESPACE@
+-LDFLAGS = @V_STATIC@
++LDFLAGS = @LDFLAGS@
+ LIBS = @V_LIB_TCL@ @V_LIB@ @LIBS@
+ INSTALL = @INSTALL@
+ 
+diff -aur ns-allinone-2.35.orig/ns-2.35/indep-utils/webtrace-conv/ucb/Makefile.in ns-allinone-2.35/ns-2.35/indep-utils/webtrace-conv/ucb/Makefile.in
+--- ns-allinone-2.35.orig/ns-2.35/indep-utils/webtrace-conv/ucb/Makefile.in	2012-09-07 14:36:42.000000000 -0700
++++ ns-allinone-2.35/ns-2.35/indep-utils/webtrace-conv/ucb/Makefile.in	2012-09-07 14:39:41.000000000 -0700
+@@ -29,7 +29,7 @@
+ 
+ INCLUDE = -I. @V_INCLUDES@
+ CFLAGS = @V_CCOPT@ -DCPP_NAMESPACE=@CPP_NAMESPACE@
+-LDFLAGS = @V_STATIC@
++LDFLAGS = @LDFLAGS@
+ LIBS = @V_LIB_TCL@ @V_LIB@ @LIBS@
+ INSTALL = @INSTALL@
+ 
+--- ns-allinone-2.35.orig/otcl-1.14/Makefile.in	2012-09-07 14:37:37.000000000 -0700
++++ ns-allinone-2.35/otcl-1.14/Makefile.in	2012-09-07 21:20:06.000000000 -0700
+@@ -8,6 +8,7 @@
+ CFLAGS=		@CFLAGS@
+ RANLIB= 	@RANLIB@
+ INSTALL=	@INSTALL@
++LDFLAGS=	@LDFLAGS@
+ 
+ #
+ # how to compile, link, and name shared libraries
+@@ -16,7 +17,7 @@
+ SHLIB_LD=	@SHLIB_LD@
+ SHLIB_CFLAGS=	@SHLIB_CFLAGS@
+ SHLIB_SUFFIX=	@SHLIB_SUFFIX@
+-SHLD_FLAGS=	@DL_LD_FLAGS@
++SHLD_FLAGS=	@LDFLAGS@
+ DL_LIBS=	@DL_LIBS@
+ 
+ SHLIB_LD_LIBS  = @SHLIB_LD_LIBS@
+
